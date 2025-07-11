@@ -1,0 +1,116 @@
+.users {
+  margin-left: clamp(72px, 20vw, 244px);
+  transition: margin-left 0.3s;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  width: 100%;
+  min-height: 100vh;
+  gap: 3rem;
+
+  --border-radius-right: 1.2rem;
+  --border-radius-top-right: 0 var(--border-radius-right) 0 0;
+  --border-radius-bottom-right: 0 0 var(--border-radius-right) 0;
+}
+
+.users .users-list {
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 1rem;
+}
+
+.users .users-list .user-card-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  color: #fff;
+  background-color: #888;
+
+  border-radius: 1rem var(--border-radius-right) var(--border-radius-right) 1rem;
+  transition: background-color 0.3s ease;
+
+  width: min(max(350px, 60%), 100%);
+  box-sizing: border-box;
+}
+
+.users .users-list .user-card-container .user-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 0.5rem;
+}
+
+.users .users-list .user-card-container .user-card-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+}
+
+.users .users-list .user-card-container button {
+  cursor: pointer;
+  user-select: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50%;
+  width: 100%;
+  background-color: #777;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.users .users-list .user-card-container button:first-child {
+  border-radius: var(--border-radius-top-right);
+}
+
+.users .users-list .user-card-container button:last-child {
+  border-radius: var(--border-radius-bottom-right);
+}
+
+.users .users-list .user-card-container button:first-child:hover {
+  background-color: #6b7280;
+}
+.users .users-list .user-card-container button:last-child:hover {
+  background-color: #9ca3af;
+}
+
+.users .users-list .user-card-container button img {
+  width: 40px;
+  padding: 5px;
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #0353a9;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.back-link:hover {
+  opacity: 0.6;
+}
+
+@media (max-width: 850px) {
+  .users {
+    margin-left: 0;
+    margin-bottom: 60px;
+  }
+}
+

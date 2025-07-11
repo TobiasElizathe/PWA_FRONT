@@ -1,0 +1,51 @@
+/* ===== Panel wrapper ===== */
+.panel-container {
+  margin: 110px auto 0;                    /* distancia bajo la navbar */
+  max-width: 880px;
+  padding: 3rem clamp(1rem, 4vw, 3.5rem);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+
+  background: #ffffff;
+  border-radius: 1.25rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+.panel-title {
+  font-size: clamp(2rem, 5vw, 2.6rem);
+  font-weight: 600;
+  color: #0d0d0d;
+  user-select: none;
+  letter-spacing: -0.5px;
+}
+
+.panel-back {
+  padding: 0.9rem 1.7rem;
+  background: #444;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.25s;
+}
+
+.panel-back:hover {
+  background: #222;
+}
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 640px) {
+  .panel-container {
+    margin-top: 90px;
+    padding: 2.5rem 1.25rem;
+    gap: 2rem;
+  }
+
+  .panel-back {
+    width: 100%;
+    text-align: center;
+  }
+}
