@@ -31,14 +31,17 @@ export const Signup = () => {
 
   const navigate = useNavigate();
 
-  const submitHandler = async (formData: FormValues) => {
-    try {
-      await axiosInstance.post('http://localhost:3000/api/users', formData);
-      navigate('/posts');
-    } catch (err) {
-      console.error(err);
-    }
-  };
+const submitHandler = async (formData: FormValues) => {
+  try {
+    const res = await axiosInstance.post('/users', formData);
+    const user = res.data;            // ← id, username, email
+    localStorage.setItem('user', JSON.stringify(user));
+    navigate('/posts');
+  } catch (err) {
+    console.error(err);
+    // podrías mostrar un toast o mensaje de error aquí
+  }
+};
 
   return (
     <section className="signup-wrap">
