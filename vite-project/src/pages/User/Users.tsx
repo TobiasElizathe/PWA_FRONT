@@ -1,12 +1,15 @@
-import './Users.css';
-import enableIcon   from '../../assets/enable.png';
-import disableIcon  from '../../assets/disable.png';
-import { UserCard } from '../../components/UserCard/UserCard';
-import { TitleHeader } from '../../components/TitleHeader/TitleHeader';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+// src/pages/Users.tsx
+import "./Users.css";
+import enableIcon  from "../../assets/enable.png";
+import disableIcon from "../../assets/disable.png";
 
-type Usuario = {
+import { UserCard }  from "../../components/UserCard/UserCard";
+import { TitleHeader } from "../../components/TitleHeader/TitleHeader";
+
+import axiosInstance from "../../config/axios";      // ← URL base centralizada
+import { useEffect, useState } from "react";
+
+type User = {
   _id?: string;
   username: string;
   email: string;
@@ -14,73 +17,74 @@ type Usuario = {
 };
 
 export const Users = () => {
-  const [listaUsuarios, setListaUsuarios] = useState<Usuario[]>([]);
-  const [isLoading,     setIsLoading]     = useState(true);
-  const [fetchError,    setFetchError]    = useState<Error | null>(null);
+  /* -------- state -------- */
+  const [users,  setUsers]  = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error,   setError]   = useState<Error | null>(null);
 
-  const cargarUsuarios = async () => {
+  /* -------- fetch -------- */
+  const loadUsers = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/api/users');
-      setListaUsuarios(data.data);
+      const res = await axiosInstance.get("/users");
+      setUsers(res.data.data);                       // back devuelve { data: [...] }
     } catch (err) {
-      setFetchError(err instanceof Error ? err : new Error('Unknown error'));
+      setError(err instanceof Error ? err : new Error("Unknown error"));
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  useEffect(() => { cargarUsuarios(); }, []);
+  useEffect(() => { loadUsers(); }, []);
 
-  const cambiarEstado = async (id: string, activar: boolean) => {
-    const url = activar
-      ? `http://localhost:3000/api/users/enable/${id}`
-      : `http://localhost:3000/api/users/disable/${id}`;
+  /* -------- enable / disable -------- */
+  const toggleStatus = async (id: string, enable: boolean) => {
+    const url = enable ? `/users/enable/${id}` : `/users/disable/${id}`;
 
     try {
-      await axios.patch(url);
-      setListaUsuarios(prev =>
-        prev.map(u => (u._id === id ? { ...u, isActive: activar } : u))
+      await axiosInstance.patch(url);
+      setUsers(prev =>
+        prev.map(u => (u._id === id ? { ...u, isActive: enable } : u))
       );
     } catch (err) {
-      setFetchError(err instanceof Error ? err : new Error('Update failed'));
+      setError(err instanceof Error ? err : new Error("Update failed"));
     }
   };
 
+  /* -------- render -------- */
   return (
     <section className="users">
-      <TitleHeader />
+      {/* Encabezado descriptivo */}
+      <TitleHeader title="User Directory" subtitle="Manage all registered users" />
 
       <div className="users-list">
-        {isLoading  && <p>Cargando…</p>}
-        {fetchError && <p>Error: {fetchError.message}</p>}
+        {loading && <p>Loading…</p>}
+        {error   && <p>Error: {error.message}</p>}
 
-        {listaUsuarios.map(u => {
-          const id           = u._id ?? u.email;
-          const inhabilitado = !u.isActive;
+        {users.map(u => {
+          const id         = u._id ?? u.email;
+          const isDisabled = !u.isActive;
 
           return (
             <div key={id} className="user-card-container">
-              <UserCard
-                username={u.username}
-                email={u.email}
-                isActive={u.isActive}
-              />
+              <UserCard username={u.username} email={u.email} isActive={u.isActive} />
 
               <div className="user-card-actions">
                 <button
-                  onClick={() => cambiarEstado(id, true)}
-                  disabled={!inhabilitado}
-                  className={!inhabilitado ? 'user-disabled' : ''}
+                  onClick={() => toggleStatus(id, true)}
+                  disabled={!isDisabled}
+                  className={!isDisabled ? "user-disabled" : ""}
+                  aria-label="Enable user"
                 >
-                  <img src={enableIcon} alt="Habilitar" draggable="false" />
+                  <img src={enableIcon} alt="" draggable="false" />
                 </button>
 
                 <button
-                  onClick={() => cambiarEstado(id, false)}
-                  disabled={inhabilitado}
-                  className={inhabilitado ? 'user-disabled' : ''}
+                  onClick={() => toggleStatus(id, false)}
+                  disabled={isDisabled}
+                  className={isDisabled ? "user-disabled" : ""}
+                  aria-label="Disable user"
                 >
-                  <img src={disableIcon} alt="Deshabilitar" draggable="false" />
+                  <img src={disableIcon} alt="" draggable="false" />
                 </button>
               </div>
             </div>

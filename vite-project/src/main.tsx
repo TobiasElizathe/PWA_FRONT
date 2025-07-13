@@ -9,6 +9,8 @@ import { Post } from "./pages/Posts/Post.tsx";
 import { PostPanel } from "./pages/postPanel/PostPanel.tsx";
 import { Users } from "./pages/User/Users.tsx";
 import { UserPanel } from "./pages/UserPanel/UserPanel.tsx";
+import { PostCreate  } from './pages/postCreate/PostCreate.tsx';
+import { PostEdit } from './pages/postEdit/PostEdit.tsx';
 
 import './index.css'
 
@@ -50,6 +52,14 @@ const router = createBrowserRouter([
       {
         path: "/userPanel",
         element: <UserPanel />,
+      },
+      {
+        path: "/postCreate",
+        element: <PostCreate />,
+      },
+      {
+        path: "/postEdit/:id",
+        element: <PostEdit />,
       },
 
 
