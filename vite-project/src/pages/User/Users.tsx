@@ -38,7 +38,7 @@ export const Users = () => {
 
   /* -------- enable / disable -------- */
   const toggleStatus = async (id: string, enable: boolean) => {
-    const url = enable ? `/users/enable/${id}` : `/users/disable/${id}`;
+    const url = enable ? `http://localhost:5000/api/users/enable${id}` : `/users/disable/${id}`;
 
     try {
       await axiosInstance.patch(url);

@@ -33,7 +33,7 @@ export const Signup = () => {
 
 const submitHandler = async (formData: FormValues) => {
   try {
-    const res = await axiosInstance.post('/users', formData);
+    const res = await axiosInstance.post("http://localhost:5000/api/users", formData);
     const user = res.data;            // ← id, username, email
     localStorage.setItem('user', JSON.stringify(user));
     navigate('/posts');

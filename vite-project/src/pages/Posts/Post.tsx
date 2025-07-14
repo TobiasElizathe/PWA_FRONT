@@ -1,111 +1,71 @@
-import "./Post.css";
-import { useNavigate, Link } from "react-router-dom";
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+// src/pages/Posts.tsx
+import "./Posts.css";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-type Post = {
+import axiosInstance from "../../config/axios";                // ← instancia centralizada
+import { TitleHeader }   from "../../components/TitleHeader/TitleHeader";
+import { PostCard }    from "../../components/PostCard/PostCard";
+
+export type PostProps = {
   _id: string;
-  author: { username: string; _id: string };
+  author: {
+    _id: string;
+    username: string;   // llegará si tu back hace populate
+    email: string;
+  };
   title: string;
   content: string;
-  likes: string[]; 
-  edited: boolean;
+  likes: string[];
 };
 
-export const PostsPage = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+export const Posts = () => {
+  /* ----- state ----- */
+  const [posts,  setPosts]  = useState<PostProps[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error,   setError]   = useState<string | null>(null);
 
   const navigate = useNavigate();
 
-  const userFromStorage = localStorage.getItem("user");
-  const currentUserId = userFromStorage ? JSON.parse(userFromStorage)._id : null;
-
+  /* ----- fetch all posts ----- */
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.get("/posts");
-        setPosts(res.data.data); 
-      } catch (err) {
-        setError("Error cargando posts");
+        const res = await axiosInstance.get("http://localhost:5000/api/posts");        // back popula author.username
+        setPosts(res.data.data);
+      } catch {
+        setError("Error fetching posts");
       } finally {
         setLoading(false);
       }
     })();
   }, []);
 
-  const handleLike = async (postId: string) => {
-    if (!currentUserId) {
-      alert("Debes estar registrado para dar like");
-      return;
-    }
-
-    try {
-      await axios.put(`/posts/${postId}/like`, {
-        userId: currentUserId,
-      });
-
-      setPosts((prev) =>
-        prev.map((p) =>
-          p._id === postId
-            ? {
-                ...p,
-                likes: p.likes.includes(currentUserId)
-                  ? p.likes.filter((id) => id !== currentUserId)
-                  : [...p.likes, currentUserId],
-              }
-            : p
-        )
-      );
-    } catch {
-      alert("Error al dar like");
-    }
-  };
-
-  if (loading) return <p>Cargando posts...</p>;
-  if (error) return <p>{error}</p>;
+  /* ----- ui ----- */
+  if (loading) return <p>Loading…</p>;
+  if (error)   return <p>{error}</p>;
 
   return (
-    <section>
-      <h1>Posts</h1>
+    <section className="posts">
+      <TitleHeader title="Posts" subtitle="See all posts from every user" />
 
-      <button onClick={() => navigate("/posts/new")}>Crear post</button>
+      <button className="create-btn" onClick={() => navigate("/posts/new")}>
+        + Crear post
+      </button>
 
       <div className="posts-list">
         {posts.map((post) => (
-          <div
-            key={post._id}
-            className="post-card"
-            style={{ border: "1px solid black", marginBottom: 10, padding: 10 }}
-          >
-            <Link to={`/posts/${post._id}`}>
-              <h3>{post.title}</h3>
-              <p>{post.content}</p>
-              <p>Autor: {post.author.username}</p>
-            </Link>
-
-            <button onClick={() => handleLike(post._id)}>
-              {post.likes.includes(currentUserId!) ? "💖 Quitar like" : "♡ Like"} (
-              {post.likes.length})
-            </button>
+          <div key={post._id} className="post-card-container">
+            <PostCard
+              _id={post._id}
+              author={post.author}
+              title={post.title}
+              content={post.content}
+              likes={post.likes}
+            />
           </div>
         ))}
       </div>
     </section>
   );
 };
-
-
-export const Post = () => {
-    return (
-    <section className="post-wrapper">
-      <h1>Posts</h1>
-
-      <div className="post-links">
-        <Link to="/postPanel">Open post panel</Link>
-        <Link to="/">Return to signup</Link>
-      </div>
-    </section>
-  );
-}

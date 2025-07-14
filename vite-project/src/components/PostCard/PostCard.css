@@ -1,0 +1,79 @@
+.posts .posts-list .post-card-container .post-card {
+  width: 100%;
+  max-width: 700px;
+  padding: 1rem;
+
+  border-left: 6px solid #763645;
+  border-radius: 0.5rem;
+  background-color: #d6d0d0;
+  color: #333;
+  font-family: "Segoe UI", sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 0.5rem;
+}
+
+.posts .posts-list .post-card-container .post-card .post-title {
+  font-size: 1.7rem;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+}
+
+.posts .posts-list .post-card-container .post-card .post-content {
+  font-size: 0.9rem;
+  line-height: 1.6;
+
+  margin: 0.5rem 0;
+  padding: 0.5rem 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-align: justify;
+}
+
+.posts .posts-list .post-card-container .post-card .post-footer {
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 0.95rem;
+  line-height: 1.4;
+
+  margin-top: 1rem;
+}
+
+.posts .posts-list .post-card-container .post-card .post-footer .post-author {
+  color: #555;
+  font-weight: 400;
+  padding: 0.3rem 0;
+}
+
+.posts
+  .posts-list
+  .post-card-container
+  .post-card
+  .post-footer
+  .post-likes
+  button {
+  background-color: #763645;
+  color: #fff;
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.posts
+  .posts-list
+  .post-card-container
+  .post-card
+  .post-footer
+  .post-likes
+  button:hover {
+  background-color: #9b4b5e;
+}
