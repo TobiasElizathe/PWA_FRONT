@@ -1,5 +1,5 @@
 // src/pages/Posts.tsx
-import "./Posts.css";
+import "./Post.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,6 +17,7 @@ export type PostProps = {
   title: string;
   content: string;
   likes: string[];
+  edited: boolean;
 };
 
 export const Posts = () => {
@@ -49,7 +50,7 @@ export const Posts = () => {
     <section className="posts">
       <TitleHeader title="Posts" subtitle="See all posts from every user" />
 
-      <button className="create-btn" onClick={() => navigate("/posts/new")}>
+      <button className="create-btn" onClick={() => navigate("./postCreate/PostCreate")}>
         + Crear post
       </button>
 
@@ -62,6 +63,7 @@ export const Posts = () => {
               title={post.title}
               content={post.content}
               likes={post.likes}
+              edited={post.edited}
             />
           </div>
         ))}

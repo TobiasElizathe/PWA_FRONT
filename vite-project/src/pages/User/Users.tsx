@@ -1,7 +1,7 @@
 // src/pages/Users.tsx
 import "./Users.css";
-import enableIcon  from "../../assets/enable.png";
-import disableIcon from "../../assets/disable.png";
+import enableIcon  from "../../assets/enable.webp";
+import disableIcon from "../../assets/disable.webp";
 
 import { UserCard }  from "../../components/UserCard/UserCard";
 import { TitleHeader } from "../../components/TitleHeader/TitleHeader";
@@ -25,7 +25,7 @@ export const Users = () => {
   /* -------- fetch -------- */
   const loadUsers = async () => {
     try {
-      const res = await axiosInstance.get("/users");
+      const res = await axiosInstance.get("http://localhost:5000/api/users");
       setUsers(res.data.data);                       // back devuelve { data: [...] }
     } catch (err) {
       setError(err instanceof Error ? err : new Error("Unknown error"));
@@ -38,7 +38,7 @@ export const Users = () => {
 
   /* -------- enable / disable -------- */
   const toggleStatus = async (id: string, enable: boolean) => {
-    const url = enable ? `http://localhost:5000/api/users/enable${id}` : `/users/disable/${id}`;
+    const url = enable ? `http://localhost:5000/api/users/activate${id}` : `/users/disactivate/${id}`;
 
     try {
       await axiosInstance.patch(url);

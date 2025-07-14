@@ -1,43 +1,68 @@
-.post-form {
-  width: 100%;
+/* ───────────────── Wrapper principal ───────────────── */
+.post-create-wrapper {
   max-width: 640px;
-  display: flex;
-  flex-direction: column; /* ← vertical */
-  gap: 1.5rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.post-form label span {
-  display: block;
-  margin-bottom: 0.4rem;
-  font-weight: 500;
+/* ───────────────── Contenedor del formulario ───────────────── */
+.post-create-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
 }
-.post-form input,
-.post-form textarea {
+
+/* ───────────────── Campos de texto ───────────────── */
+.input-field,
+.textarea-field {
   width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 0.8rem 1rem;
   font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
 }
-.post-form em {
+
+.input-field:focus,
+.textarea-field:focus {
+  outline: none;
+  border-color: #0077cc;
+}
+
+/* ───────────────── Mensajes de error ───────────────── */
+.error-msg {
   color: #d32f2f;
   font-size: 0.85rem;
+  margin-top: -0.6rem;
+  margin-bottom: -0.6rem;
 }
-.post-form button {
+
+/* ───────────────── Botones ───────────────── */
+.btn-primary {
   padding: 0.8rem 1.6rem;
+  background-color: #0077cc;
+  color: #fff;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
-  background: var(--clr-primary, #0069c0);
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #005fa3;
+}
+
+.btn-disabled {
+  padding: 0.8rem 1.6rem;
+  background-color: #bbb;
   color: #fff;
-  transition: background 0.25s;
-}
-.post-form .btn-secondary {
-  background: var(--clr-gray, #555);
-  margin-left: 1rem;
-}
-.post-form button:disabled {
-  opacity: 0.7;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
   cursor: not-allowed;
+  opacity: 0.7;
 }

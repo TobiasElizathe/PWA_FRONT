@@ -3,10 +3,12 @@
   max-width: 700px;
   padding: 1rem;
 
-  border-left: 6px solid #763645;
+  border-left: 6px solid #ff003c;
+  border-right: 6px solid #ff003c;
+  border-bottom: 6px solid #ff003c;
   border-radius: 0.5rem;
-  background-color: #d6d0d0;
-  color: #333;
+  background-color: #373636;
+  color: #979797;
   font-family: "Segoe UI", sans-serif;
 
   display: flex;
@@ -76,4 +78,14 @@
   .post-likes
   button:hover {
   background-color: #9b4b5e;
+}
+
+.posts
+  .posts-list
+  .post-card-container
+  .post-card
+  .post-footer
+  .post-likes
+  button:active {
+  transform: scale(0.97);
 }

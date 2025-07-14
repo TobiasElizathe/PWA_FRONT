@@ -13,9 +13,10 @@ type PostProps = {
   title: string;
   content: string;
   likes: string[];
+  edited: boolean;
 };
 
-export const PostCard: React.FC<PostProps> = ({ _id, author,title,content,likes,
+export const PostCard: React.FC<PostProps> = ({ _id, author,title,content,likes,edited,
 }) => {
   return (
     <div className="post-card">
@@ -26,7 +27,10 @@ export const PostCard: React.FC<PostProps> = ({ _id, author,title,content,likes,
       </header>
       <main className="post-content">{content}</main>
       <footer className="post-footer">
-        <div className="post-author">By: {author.username}</div>
+        <div className="post-author">
+          By: <strong>{author.username}</strong>{" "}
+          <i>{edited ? ` (edited)` : ""}</i>
+        </div>
         <div className="post-likes">
           <button>Likes: {likes.length}</button>
         </div>

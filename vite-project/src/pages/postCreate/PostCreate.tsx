@@ -1,85 +1,104 @@
 // src/pages/PostCreate.tsx
+import "./PostCreate.css";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import axiosInstance from "../../config/axios";         
+import { joiResolver } from "@hookform/resolvers/joi";
+import Joi from "joi";
+import axiosInstance from "../../config/axios";
+import { TitleHeader } from "../../components/TitleHeader/TitleHeader";
 
-type FormValues = {
+type FormInputs = {
+  author: {
+    _id: string;
+    username: string;
+    email: string;
+  };
   title: string;
   content: string;
 };
 
+const schema = Joi.object<FormInputs>({
+  title: Joi.string().required().messages({
+    "string.empty": "El título es obligatorio",
+  }),
+  content: Joi.string().required().messages({
+    "string.empty": "El contenido no puede estar vacío",
+  }),
+});
+
+
 export const PostCreate = () => {
-  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormValues>();
+    formState: { errors },
+  } = useForm<FormInputs>({
+    resolver: joiResolver(schema),
+  });
 
-  /*--- user from localStorage ---*/
-  const stored = localStorage.getItem("user");
-  const user   = stored ? JSON.parse(stored) : null;
+   const navigate = useNavigate();
 
-  const onSubmit = async (data: FormValues) => {
-    if (!user?._id) {
-      alert("Debes registrarte para crear un post");
-      return;
-    }
+  const userData = localStorage.getItem("user");
+  const currentUser = userData ? JSON.parse(userData) : null;
+  const canSubmit = !currentUser;
 
-    try {
-      /*--- POST al backend ---*/
-      await axiosInstance.post("/posts", {
-        ...data,
-        author: user._id,            // ← se envía el autor
-      });
+  const createPost = async (values: FormInputs) => {
+    if (!currentUser) return;
 
-      navigate("/posts");           // ← redirige a la lista
-    } catch (err) {
-      console.error(err);
-      alert("Error al crear el post");
+    const payload = {
+      author: currentUser,
+      title: values.title,
+      content: values.content,
+    };
+
+try {
+      const response = await axiosInstance.post(
+        "http://localhost:5000/api/posts",
+        payload
+      );
+      console.log("Post created: ", response.data);
+      navigate("/posts");
+    } catch (error) {
+      console.error("Error creating post: ", error);
     }
   };
 
   return (
-    <section className="post-wrapper">
-      <h1>Crear nuevo post</h1>
+    <section className="post-create-wrapper">
+      <TitleHeader
+        title="Nuevo Post"
+        subtitle="Completá los campos para publicar"
+      />
 
-      {/* nombre del autor (solo lectura) */}
-      {user?.username && (
-        <p style={{ fontStyle: "italic", marginBottom: "1rem" }}>
-          Publicando como <strong>{user.username}</strong>
-        </p>
-      )}
-
-      <form className="post-form" onSubmit={handleSubmit(onSubmit)}>
-        <label>
-          <span>Título</span>
+      <div className="post-create-form">
+        <form onSubmit={handleSubmit(createPost)}>
           <input
-            {...register("title", { required: "Título obligatorio" })}
+            type="text"
             placeholder="Título del post"
+            {...register("title")}
+            className="input-field"
           />
-          {errors.title && <em>{errors.title.message}</em>}
-        </label>
+          {errors.title && <span className="error-msg">{errors.title.message}</span>}
 
-        <label>
-          <span>Contenido</span>
           <textarea
-            {...register("content", { required: "Contenido obligatorio" })}
-            placeholder="Escribe aquí…"
+            placeholder="Escribí el contenido..."
             rows={6}
+            {...register("content")}
+            className="textarea-field"
           />
-          {errors.content && <em>{errors.content.message}</em>}
-        </label>
+          {errors.content && (
+            <span className="error-msg">{errors.content.message}</span>
+          )}
 
-        <button disabled={isSubmitting}>Publicar</button>
-        <button
-          type="button"
-          onClick={() => navigate("/posts")}
-          className="btn-secondary"
-        >
-          Cancelar
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            className={canSubmit ? "btn-primary" : "btn-disabled"}
+          >
+            {canSubmit ? "Publicar" : "Debe iniciar sesión"}
+          </button>
+        </form>
+      </div>
     </section>
   );
 };
