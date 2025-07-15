@@ -1,4 +1,3 @@
-// src/pages/PostCreate.tsx
 import "./PostCreate.css";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -6,13 +5,9 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
 import axiosInstance from "../../config/axios";
 import { TitleHeader } from "../../components/TitleHeader/TitleHeader";
+import { useState } from "react";
 
 type FormInputs = {
-  author: {
-    _id: string;
-    username: string;
-    email: string;
-  };
   title: string;
   content: string;
 };
@@ -26,7 +21,6 @@ const schema = Joi.object<FormInputs>({
   }),
 });
 
-
 export const PostCreate = () => {
   const {
     register,
@@ -36,14 +30,18 @@ export const PostCreate = () => {
     resolver: joiResolver(schema),
   });
 
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const userData = localStorage.getItem("user");
   const currentUser = userData ? JSON.parse(userData) : null;
-  const canSubmit = !currentUser;
+  const canSubmit = !!currentUser;
 
   const createPost = async (values: FormInputs) => {
     if (!currentUser) return;
+    setLoading(true);
+    setError(null);
 
     const payload = {
       author: currentUser,
@@ -51,15 +49,15 @@ export const PostCreate = () => {
       content: values.content,
     };
 
-try {
-      const response = await axiosInstance.post(
-        "http://localhost:5000/api/posts",
-        payload
-      );
+    try {
+      const response = await axiosInstance.post("/posts", payload);
       console.log("Post created: ", response.data);
       navigate("/posts");
-    } catch (error) {
-      console.error("Error creating post: ", error);
+    } catch (err) {
+      setError("Error al crear el post, intenta nuevamente.");
+      console.error("Error creating post: ", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,7 +76,9 @@ try {
             {...register("title")}
             className="input-field"
           />
-          {errors.title && <span className="error-msg">{errors.title.message}</span>}
+          {errors.title && (
+            <span className="error-msg">{errors.title.message}</span>
+          )}
 
           <textarea
             placeholder="Escribí el contenido..."
@@ -92,11 +92,12 @@ try {
 
           <button
             type="submit"
-            disabled={!canSubmit}
+            disabled={!canSubmit || loading}
             className={canSubmit ? "btn-primary" : "btn-disabled"}
           >
-            {canSubmit ? "Publicar" : "Debe iniciar sesión"}
+            {loading ? "Publicando..." : canSubmit ? "Publicar" : "Debe iniciar sesión"}
           </button>
+          {error && <p className="error-msg">{error}</p>}
         </form>
       </div>
     </section>

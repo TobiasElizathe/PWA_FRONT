@@ -1,37 +1,43 @@
 import "./PostCard.css";
 import React from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";  // Ojo, debe ser react-router-dom, no react-router
 
 type PostProps = {
   _id?: string;
-    author: {
+  author: {
     _id: string;
     username: string;
     email: string;
-    };
-
+  };
   title: string;
   content: string;
   likes: string[];
   edited: boolean;
 };
 
-export const PostCard: React.FC<PostProps> = ({ _id, author,title,content,likes,edited,
+export const PostCard: React.FC<PostProps> = ({
+  _id,
+  author,
+  title,
+  content,
+  likes,
+  edited,
 }) => {
   return (
     <div className="post-card">
-      <header className="post-title">
-        <Link to={`/PostDashboard/${_id}`}>
+      <header className="post-card__title">
+        <Link to={`/PostPanel/${_id}`}>
           <strong>{title}</strong>
         </Link>
       </header>
-      <main className="post-content">{content}</main>
-      <footer className="post-footer">
-        <div className="post-author">
-          By: <strong>{author.username}</strong>{" "}
-          <i>{edited ? ` (edited)` : ""}</i>
+
+      <main className="post-card__content">{content}</main>
+
+      <footer className="post-card__footer">
+        <div className="post-card__author">
+          By: <strong>{author.username}</strong> {edited && <i>(edited)</i>}
         </div>
-        <div className="post-likes">
+        <div className="post-card__likes">
           <button>Likes: {likes.length}</button>
         </div>
       </footer>

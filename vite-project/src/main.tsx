@@ -1,8 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router";
-import { Outlet } from "react-router";
-import { Navbar } from "./components/Navbar/Navbar.tsx";
+import { Layout } from "./components/Layout/Layout.tsx";
 import { FallBack } from "./components/Fallback/FallBack.tsx";
 import { Signup } from "./pages/Signup/Signup";
 import { Posts } from "./pages/Posts/Post.tsx";
@@ -11,14 +10,6 @@ import { Users } from "./pages/User/Users.tsx";
 import { PostCreate  } from './pages/postCreate/PostCreate.tsx';
 
 import './index.css'
-
-
-const Layout = () => (
-  <div className="layout">
-    <Navbar />
-    <Outlet />
-  </div>
-);
 
 const router = createBrowserRouter([
   {
@@ -40,8 +31,8 @@ const router = createBrowserRouter([
         element: <Posts />,
       },
       {
-        path: "/postPanel/:id",
-        element: <PostPanel />,
+        path: "/PostPanel/:id",          
+        element: <PostPanel />,      
       },
             {
         path: "/users",

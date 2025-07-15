@@ -1,18 +1,16 @@
 // src/pages/Posts.tsx
 import "./Post.css";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../config/axios";
+import { TitleHeader } from "../../components/TitleHeader/TitleHeader";
+import { PostCard }  from "../../components/PostCard/PostCard";
 
-import axiosInstance from "../../config/axios";                // ← instancia centralizada
-import { TitleHeader }   from "../../components/TitleHeader/TitleHeader";
-import { PostCard }    from "../../components/PostCard/PostCard";
-
-export type PostProps = {
+export type Post = {
   _id: string;
   author: {
     _id: string;
-    username: string;   // llegará si tu back hace populate
-    email: string;
+    username?: string;
+    email?: string;
   };
   title: string;
   content: string;
@@ -21,45 +19,41 @@ export type PostProps = {
 };
 
 export const Posts = () => {
-  /* ----- state ----- */
-  const [posts,  setPosts]  = useState<PostProps[]>([]);
+  const [posts,  setPosts]  = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState<string | null>(null);
 
-  const navigate = useNavigate();
-
-  /* ----- fetch all posts ----- */
   useEffect(() => {
     (async () => {
       try {
-        const res = await axiosInstance.get("http://localhost:5000/api/posts");        // back popula author.username
+        const res = await axiosInstance.get("/posts");
         setPosts(res.data.data);
-      } catch {
-        setError("Error fetching posts");
+        if (import.meta.env.DEV) console.log("Posts fetched");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }
     })();
   }, []);
 
-  /* ----- ui ----- */
   if (loading) return <p>Loading…</p>;
-  if (error)   return <p>{error}</p>;
+  if (error)   return <p>Error: {error}</p>;
 
   return (
     <section className="posts">
-      <TitleHeader title="Posts" subtitle="See all posts from every user" />
-
-      <button className="create-btn" onClick={() => navigate("./postCreate/PostCreate")}>
-        + Crear post
-      </button>
+      <TitleHeader title="Posts" subtitle="See every user's posts" />
 
       <div className="posts-list">
         {posts.map((post) => (
           <div key={post._id} className="post-card-container">
             <PostCard
               _id={post._id}
-              author={post.author}
+              author={{
+                _id: post.author._id,
+                username: post.author.username ?? "N/A",
+                email: post.author.email ?? "—",
+              }}
               title={post.title}
               content={post.content}
               likes={post.likes}

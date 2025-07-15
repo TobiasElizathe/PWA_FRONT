@@ -1,5 +1,6 @@
-import './PostPanel.css';
-import { useParams, useNavigate } from "react-router";
+import "./PostPanel.css";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
@@ -21,26 +22,64 @@ const validationsSchema = Joi.object<ModifyPostFormInputs>({
 });
 
 export const PostPanel = () => {
+  const [data, setData] = useState<ModifyPostFormInputs | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
   const { id } = useParams();
 
-  const navigate = useNavigate();
+  const userStored = localStorage.getItem("user");
+  const userRegistered = JSON.parse(userStored || "{}");
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ModifyPostFormInputs>({
     resolver: joiResolver(validationsSchema),
   });
 
+  const fetchData = async () => {
+    try {
+      const response = await axiosInstance.get(`/posts/${id}`);
+      setData(response.data.data);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error);
+      } else {
+        setError(new Error("Unknown error"));
+      }
+    } finally {
+      setLoading(false);
+      console.log("Data fetched successfully.");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [id]);
+
+  useEffect(() => {
+    if (data) {
+      reset({
+        title: data.title,
+        content: data.content,
+      });
+    }
+  }, [data, reset]);
+
+  const navigate = useNavigate();
+
   const onSubmit = async (data: ModifyPostFormInputs) => {
     const sendData = {
       title: data.title,
       content: data.content,
+      author: userRegistered._id,
     };
     try {
-      const response = await axiosInstance.patch(
-        `/posts/update/${id}`,
+      const response = await axiosInstance.put(
+        `/posts/${id}`,
         sendData
       );
 
@@ -54,7 +93,7 @@ export const PostPanel = () => {
   return (
     <section className="post-dashboard">
       <TitleHeader
-        title="Post Panel"
+        title="Post dashboard"
         subtitle="Edit and manage your selected post"
       />
       <div className="post-dashboard-container">
@@ -72,11 +111,14 @@ export const PostPanel = () => {
             placeholder="Change post content..."
             rows={6}
           />
-
           {errors.content && <span>{errors.content.message}</span>}
 
-          <button type="submit" className="submit-button">
-            Modify post
+          <button
+            type="submit"
+            className={!userStored ? "user-disabled" : "submit-button"}
+            disabled={!userStored}
+          >
+            {!userStored ? "User not registered" : "Modify post"}
           </button>
         </form>
       </div>
