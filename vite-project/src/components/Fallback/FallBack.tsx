@@ -1,5 +1,3 @@
-import "./FallBack.css";
-
 export const FallBack = () => {
   return (
     <section className="fall-back">

@@ -9,7 +9,7 @@ import axiosInstance  from "../../config/axios";
 import { useEffect, useState } from "react";
 
 type User = {
-  _id: string;             // ⇢ lo marcamos obligatorio
+  _id: string;             
   username: string;
   email: string;
   isActive: boolean;
@@ -59,12 +59,12 @@ export const Users = () => {
     }
   };
 
-  /* ───── render ───── */
+  
   return (
-    <section className="users">
+    <section className="usuarios-main">
       <TitleHeader title="User Directory" subtitle="Manage all registered users" />
 
-      <div className="users-list">
+      <div className="usuarios-listado">
         {loading && <p>Loading…</p>}
         {error   && <p style={{ color: "red" }}>{error.message}</p>}
 
@@ -73,16 +73,16 @@ export const Users = () => {
           const isToggling  = loadingToggleId === _id;
 
           return (
-            <div key={_id} className="user-card-container">
+            <div key={_id} className="usuarios-item-contenedor">
               <UserCard username={username} email={email} isActive={isActive} />
 
-              <div className="user-card-actions">
+              <div className="usuarios-info">
                 {/* Enable */}
                 <button
                   type="button"
                   onClick={() => toggleStatus(_id, true)}
                   disabled={!isDisabled || isToggling}
-                  className={!isDisabled || isToggling ? "user-disabled" : ""}
+                  className={!isDisabled || isToggling ? "usuario-inactivo" : ""}
                   aria-label="Enable user"
                 >
                   <img src={enableIcon} alt="" draggable="false" />
@@ -93,7 +93,7 @@ export const Users = () => {
                   type="button"
                   onClick={() => toggleStatus(_id, false)}
                   disabled={isDisabled || isToggling}
-                  className={isDisabled || isToggling ? "user-disabled" : ""}
+                  className={isDisabled || isToggling ? "usuario-inactivo" : ""}
                   aria-label="Disable user"
                 >
                   <img src={disableIcon} alt="" draggable="false" />

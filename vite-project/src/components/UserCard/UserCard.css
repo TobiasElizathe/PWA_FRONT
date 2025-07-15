@@ -1,20 +1,36 @@
-.user-disabled {
-  opacity: 0.5;
-  pointer-events: none;
-  user-select: none;
-  filter: grayscale(100%);
-
-  transition: all 0.3s ease;
-}
-
-.users .users-list .user-card-container .user-card {
+/* ---------- Base de la Card ---------- */
+.ucard {
   width: 100%;
-  max-width: 400px;
-  padding: 1rem;
+  max-width: 420px;
+  padding: 0.9rem 1.2rem;
+  background: #fafafa;
+  border: 1px solid #d8d8d8;
+  border-radius: 6px;
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 0.55rem;
+  font-family: "Segoe UI", sans-serif;
+  color: #1d1d1d;
 
-  gap: 0.5rem;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.ucard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+.ucard--off {
+  opacity: 0.45;
+  filter: grayscale(100%);
+  pointer-events: none;
+}
+
+/* ---------- Text rows ---------- */
+.ucard__row {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-break: break-word;
 }

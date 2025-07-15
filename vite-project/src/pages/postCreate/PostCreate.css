@@ -1,9 +1,9 @@
 /* ───────────────── Wrapper principal ───────────────── */
 .post-create-wrapper {
   max-width: 640px;
-  margin: 2rem auto; /* un poco más de espacio arriba y abajo */
+  margin: 2rem auto; 
   padding: 2.5rem 2rem;
-  background-color: #fff; /* fondo blanco para mejor contraste */
+  background-color: #fff; 
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

@@ -1,4 +1,3 @@
-// src/pages/Posts.tsx
 import "./Post.css";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";

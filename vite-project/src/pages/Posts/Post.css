@@ -18,7 +18,7 @@ body.dark {
   --clr-shadow: rgba(0, 0, 0, 0.4);
 }
 
-/* ============  POST WRAPPER  ============ */
+/* ============ WRAPPER  ============ */
 .post-wrapper {
   margin: calc(var(--navbar-h) + 20px) auto 0;
   padding: 2rem clamp(1rem, 4vw, 2rem);
@@ -45,7 +45,7 @@ body.dark {
   text-align: center;
 }
 
-/* ============  LINKS GROUP  ============ */
+/* ============  LINKS   ============ */
 .post-links {
   width: 100%;
   display: flex;
@@ -87,7 +87,7 @@ body.dark {
   box-shadow: 0 0 8px var(--clr-primary);
 }
 
-/* ============  RESPONSIVE TWEAKS  ============ */
+/* ============  RESPONSIVE  ============ */
 @media (max-width: 640px) {
   .post-wrapper {
     margin-top: calc(var(--navbar-h) + 10px);

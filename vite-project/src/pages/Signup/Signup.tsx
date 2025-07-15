@@ -1,4 +1,3 @@
-// src/pages/Signup/Signup.tsx
 import "./Signup.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";

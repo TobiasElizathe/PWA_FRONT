@@ -7,97 +7,77 @@ import axiosInstance from "../../config/axios";
 import { TitleHeader } from "../../components/TitleHeader/TitleHeader";
 import { useState } from "react";
 
-type FormInputs = {
-  title: string;
-  content: string;
-};
+type FormData = { title: string; content: string };
 
-const schema = Joi.object<FormInputs>({
-  title: Joi.string().required().messages({
-    "string.empty": "El título es obligatorio",
-  }),
-  content: Joi.string().required().messages({
-    "string.empty": "El contenido no puede estar vacío",
-  }),
+const validation = Joi.object<FormData>({
+  title:   Joi.string().required().messages({ "string.empty": "El título es obligatorio" }),
+  content: Joi.string().required().messages({ "string.empty": "El contenido no puede estar vacío" }),
 });
 
 export const PostCreate = () => {
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<FormInputs>({
-    resolver: joiResolver(schema),
-  });
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({ resolver: joiResolver(validation) });
 
+ 
+  const [serverErr, setServerErr] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const userData = localStorage.getItem("user");
-  const currentUser = userData ? JSON.parse(userData) : null;
-  const canSubmit = !!currentUser;
 
-  const createPost = async (values: FormInputs) => {
-    if (!currentUser) return;
-    setLoading(true);
-    setError(null);
+  const logged = JSON.parse(localStorage.getItem("user") || "null");
+  const canSubmit = Boolean(logged);
 
-    const payload = {
-      author: currentUser,
-      title: values.title,
-      content: values.content,
-    };
+  /* submit */
+  const onSubmit = async (values: FormData) => {
+    if (!logged) return;
+    setServerErr(null);
 
     try {
-      const response = await axiosInstance.post("/posts", payload);
-      console.log("Post created: ", response.data);
+      await axiosInstance.post("/posts", { ...values, author: logged });
       navigate("/posts");
-    } catch (err) {
-      setError("Error al crear el post, intenta nuevamente.");
-      console.error("Error creating post: ", err);
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      console.error("Error creating post:", e);
+      setServerErr("Error al crear el post, intenta nuevamente.");
     }
   };
 
   return (
     <section className="post-create-wrapper">
-      <TitleHeader
-        title="Nuevo Post"
-        subtitle="Completá los campos para publicar"
-      />
+      <TitleHeader title="Nuevo Post" subtitle="Completá los campos para publicar" />
 
       <div className="post-create-form">
-        <form onSubmit={handleSubmit(createPost)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* título */}
           <input
-            type="text"
+            className="input-field"
             placeholder="Título del post"
             {...register("title")}
-            className="input-field"
           />
-          {errors.title && (
-            <span className="error-msg">{errors.title.message}</span>
-          )}
+          {errors.title && <span className="error-msg">{errors.title.message}</span>}
 
+          {/* contenido */}
           <textarea
-            placeholder="Escribí el contenido..."
             rows={6}
-            {...register("content")}
             className="textarea-field"
+            placeholder="Escribí el contenido..."
+            {...register("content")}
           />
-          {errors.content && (
-            <span className="error-msg">{errors.content.message}</span>
-          )}
+          {errors.content && <span className="error-msg">{errors.content.message}</span>}
 
+          {/* botón */}
           <button
             type="submit"
-            disabled={!canSubmit || loading}
+            disabled={!canSubmit || isSubmitting}
             className={canSubmit ? "btn-primary" : "btn-disabled"}
           >
-            {loading ? "Publicando..." : canSubmit ? "Publicar" : "Debe iniciar sesión"}
+            {isSubmitting ? "Publicando…" : canSubmit ? "Publicar" : "Debe iniciar sesión"}
           </button>
-          {error && <p className="error-msg">{error}</p>}
+
+          {/* error servidor */}
+          {serverErr && <p className="error-msg">{serverErr}</p>}
         </form>
       </div>
     </section>

@@ -1,14 +1,11 @@
 import "./PostCard.css";
-import React from "react";
-import { Link } from "react-router-dom";  // Ojo, debe ser react-router-dom, no react-router
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import axiosInstance from "../../config/axios";
 
-type PostProps = {
+export type PostProps = {
   _id?: string;
-  author: {
-    _id: string;
-    username: string;
-    email: string;
-  };
+  author: { _id: string; username: string; email: string };
   title: string;
   content: string;
   likes: string[];
@@ -23,24 +20,58 @@ export const PostCard: React.FC<PostProps> = ({
   likes,
   edited,
 }) => {
+  /* -------- los state -------- */
+  const loggedUser = JSON.parse(localStorage.getItem("user") || "null");
+  const userId: string | null = loggedUser?._id ?? null;
+
+  const [likeList, setLikeList] = useState<string[]>(likes);
+  const hasLiked = userId ? likeList.includes(userId) : false;
+
+  /* -------- like y unlike -------- */
+  const onToggleLike = async () => {
+    if (!userId || !_id) return;
+
+    try {
+      const { data } = await axiosInstance.patch(`/posts/${_id}/like`, {
+        userId,
+      });
+      setLikeList(data.data.likes);
+    } catch (err) {
+      console.error("Could not toggle like:", err);
+    }
+  };
+
+  /* -------- render -------- */
   return (
-    <div className="post-card">
-      <header className="post-card__title">
-        <Link to={`/PostPanel/${_id}`}>
-          <strong>{title}</strong>
+    <article className="pcard">
+      <header className="pcard__head">
+        <Link to={`/postPanel/${_id}`} className="pcard__link">
+          {title}
         </Link>
       </header>
 
-      <main className="post-card__content">{content}</main>
+      <p className="pcard__body">{content}</p>
 
-      <footer className="post-card__footer">
-        <div className="post-card__author">
-          By: <strong>{author.username}</strong> {edited && <i>(edited)</i>}
-        </div>
-        <div className="post-card__likes">
-          <button>Likes: {likes.length}</button>
-        </div>
+      <footer className="pcard__foot">
+        <span className="pcard__author">
+          By <strong>{author.username}</strong>
+          {edited && <em> (edited)</em>}
+        </span>
+
+        <button
+          onClick={onToggleLike}
+          disabled={!userId}
+          className={
+            !userId
+              ? "pcard__btn pcard__btn--disabled"
+              : hasLiked
+              ? "pcard__btn pcard__btn--active"
+              : "pcard__btn"
+          }
+        >
+          {hasLiked ? "Unlike" : "Like"} ({likeList.length})
+        </button>
       </footer>
-    </div>
+    </article>
   );
 };

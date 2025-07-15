@@ -1,6 +1,6 @@
-/*  ======== NAVBAR TOP  ========  */
+
 .navbar {
-  /* nuevo layout */
+
   width: 100%;
   height: 102px;
   position: fixed;
@@ -12,8 +12,8 @@
   align-items: center;
   justify-content: space-between;
 
-  /* nueva paleta */
-  background: #0f0f17;              /* casi negro */
+
+  background: #0f0f17;              
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 
   padding: 0 2rem;
@@ -52,7 +52,7 @@
   margin: 0;
   padding: 0;
 
-  position: absolute;          /* ← centra sin afectar el flujo del logo */
+  position: absolute;          
   left: 50%;
   transform: translateX(-50%);
 }
