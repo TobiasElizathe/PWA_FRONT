@@ -42,7 +42,7 @@ export const Users = () => {
     setError(null);
     setToggleId(id);
 
-    // → must match backend: /users/:id/activate  |  /users/:id/desactivate
+  
     const url = enable
       ? `/users/${id}/activate`
       : `/users/${id}/desactivate`;   // con “s”, como en tu router
